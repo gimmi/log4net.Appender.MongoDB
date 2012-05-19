@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using log4net.Appender;
 using log4net.Core;
 
 namespace log4net.Appender.MongoDB
 {
 	public class MongoDBAppender : IBulkAppender
 	{
+		private readonly List<MongoAppenderFileld> _fields = new List<MongoAppenderFileld>();
+
 		/// <summary>
 		/// MongoDB database connection in the format:
 		/// mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
@@ -24,14 +25,12 @@ namespace log4net.Appender.MongoDB
 		/// </summary>
 		public string CollectionName { get; set; }
 
-		private readonly List<MongoAppenderFileld> _fields = new List<MongoAppenderFileld>();
+		public string Name { get; set; }
 
 		public void AddField(MongoAppenderFileld fileld)
 		{
 			_fields.Add(fileld);
 		}
-
-		public string Name { get; set; }
 
 		public void Close() {}
 
@@ -53,13 +52,11 @@ namespace log4net.Appender.MongoDB
 		private BsonDocument BuildBsonDocument(LoggingEvent log)
 		{
 			var doc = new BsonDocument();
-			doc.Add("1", "2");
-			foreach(var field in _fields)
+			foreach(MongoAppenderFileld field in _fields)
 			{
-				var lookupProperty = log.LookupProperty("TimeStamp");
-				var format = field.Layout.Format(log);
-				var value = BsonValue.Create(format);
-				doc.Add(field.Name, value);
+				object value = field.Layout.Format(log);
+				BsonValue bsonValue = BsonValue.Create(value);
+				doc.Add(field.Name, bsonValue);
 			}
 			return doc;
 		}
