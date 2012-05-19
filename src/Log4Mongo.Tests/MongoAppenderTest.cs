@@ -51,6 +51,17 @@ namespace Log4Mongo.Tests
 		}
 
 		[Test]
+		public void Should_log_globalcontext_properties()
+		{
+			GlobalContext.Properties["globalContextProperty"] = "value";
+
+			LogManager.GetLogger("Test").Info("a log");
+
+			var doc = _collection.FindOneAs<BsonDocument>();
+			doc.GetElement("globalContextProperty").Value.AsString.Should().Be.EqualTo("value");
+		}
+
+		[Test]
 		public void Should_preserve_type_of_properties()
 		{
 			GlobalContext.Properties["numberProperty"] = 123;
