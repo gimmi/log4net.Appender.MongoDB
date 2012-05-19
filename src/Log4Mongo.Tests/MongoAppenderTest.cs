@@ -28,8 +28,7 @@ namespace Log4Mongo.Tests
 			{
 				LogManager.GetLogger(typeof(MongoAppenderTest)).Info(i);
 			}
-			MongoCursor<BsonDocument> docs = _collection.FindAllAs<BsonDocument>();
-			Assert.AreEqual(1000, docs.Count());
+			_collection.Count().Should().Be.EqualTo(1000);
 		}
 
 		[Test]
@@ -41,16 +40,27 @@ namespace Log4Mongo.Tests
 		}
 
 		[Test]
-		public void Should_log_custom_properties()
+		public void Should_log_threadcontext_properties()
 		{
-			ThreadContext.Properties["customnumber"] = 123;
-			ThreadContext.Properties["customdate"] = new DateTime(2012, 5, 19, 0, 0, 0, DateTimeKind.Utc);
-			LogManager.GetLogger(typeof(MongoAppenderTest)).Info("a log");
+			ThreadContext.Properties["threadContextProperty"] = "value";
+
+			LogManager.GetLogger("Test").Info("a log");
+
 			var doc = _collection.FindOneAs<BsonDocument>();
-			doc.GetElement("customnumber").Value.Should().Be.OfType<BsonInt32>();
-			doc.GetElement("customnumber").Value.ToInt32().Should().Be.EqualTo(123);
-			doc.GetElement("customdate").Value.Should().Be.OfType<BsonDateTime>();
-			doc.GetElement("customdate").Value.AsDateTime.Date.Should().Be.EqualTo(new DateTime(2012, 5, 19));
+			doc.GetElement("threadContextProperty").Value.AsString.Should().Be.EqualTo("value");
+		}
+
+		[Test]
+		public void Should_preserve_type_of_properties()
+		{
+			GlobalContext.Properties["numberProperty"] = 123;
+			ThreadContext.Properties["dateProperty"] = DateTime.Now;
+
+			LogManager.GetLogger("Test").Info("a log");
+	
+			var doc = _collection.FindOneAs<BsonDocument>();
+			doc.GetElement("numberProperty").Value.Should().Be.OfType<BsonInt32>();
+			doc.GetElement("dateProperty").Value.Should().Be.OfType<BsonDateTime>();
 		}
 	}
 }
