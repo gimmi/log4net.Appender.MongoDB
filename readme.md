@@ -1,7 +1,7 @@
 MongoDB appender for log4net
 ----------------------------
 
-The title says it all. Check [Log4Net site](http://logging.apache.org/log4net/) or [MongoDB site](http://www.mongodb.org/) if you need more than this.
+The title says it all. Check [Log4Net site](http://logging.apache.org/log4net/) or [MongoDB site](http://www.mongodb.org/) if you need more info.
 
 Installation
 ------------

@@ -46,7 +46,6 @@ task('test', 'build', function () {
 task('release', 'test', function () {
 	fs.deletePath('build');
 	fs.createDirectory('build');
-	//dotnet.deployToNuGet('src/log4net.Appender.MongoDB/log4net.Appender.MongoDB.csproj', 'src/log4net.Appender.MongoDB/bin/Debug', true);
 	
 	sys.run('tools/nuget/nuget.exe', 'pack', 'src\\log4net.Appender.MongoDB\\log4net.Appender.MongoDB.csproj', '-Build', '-OutputDirectory', 'build', '-Symbols');
 	sys.run('tools/nuget/nuget.exe', 'push', 'build\\log4net.Appender.MongoDB.' + assemblyVersion + '.nupkg');
