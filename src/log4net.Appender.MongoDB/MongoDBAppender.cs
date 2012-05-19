@@ -14,7 +14,7 @@ namespace log4net.Appender.MongoDB
 		/// MongoDB database connection in the format:
 		/// mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
 		/// See http://www.mongodb.org/display/DOCS/Connections
-		/// If no database specified, default to "logs"
+		/// If no database specified, default to "log4net"
 		/// </summary>
 		public string ConnectionString { get; set; }
 
@@ -44,7 +44,7 @@ namespace log4net.Appender.MongoDB
 		{
 			MongoUrl url = MongoUrl.Create(ConnectionString);
 			MongoServer conn = MongoServer.Create(url);
-			MongoDatabase db = conn.GetDatabase(url.DatabaseName ?? "logs");
+			MongoDatabase db = conn.GetDatabase(url.DatabaseName ?? "log4net");
 			MongoCollection collection = db.GetCollection(CollectionName ?? "logs");
 
 			collection.InsertBatch(logs.Select(BuildBsonDocument));

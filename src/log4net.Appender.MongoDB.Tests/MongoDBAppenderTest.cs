@@ -18,7 +18,7 @@ namespace log4net.Appender.MongoDB.Tests
 		public void SetUp()
 		{
 			MongoServer conn = MongoServer.Create("mongodb://localhost");
-			MongoDatabase db = conn.GetDatabase("logs");
+			MongoDatabase db = conn.GetDatabase("log4net");
 			_collection = db.GetCollection("logs");
 			_collection.RemoveAll();
 
