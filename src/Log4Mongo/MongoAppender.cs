@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -23,6 +24,13 @@ namespace Log4Mongo
 		/// </summary>
 		public string CollectionName { get; set; }
 
+		private readonly List<MongoAppenderFileld> _fields = new List<MongoAppenderFileld>();
+
+		public void AddField(MongoAppenderFileld fileld)
+		{
+			_fields.Add(fileld);
+		}
+
 		public string Name { get; set; }
 
 		public void Close() {}
@@ -44,10 +52,16 @@ namespace Log4Mongo
 
 		private BsonDocument BuildBsonDocument(LoggingEvent log)
 		{
-			return new BsonDocument {
-				{ "timestamp", new BsonDateTime(log.TimeStamp) },
-				{ "level", new BsonString(log.Level.ToString()) },
-			};
+			var doc = new BsonDocument();
+			doc.Add("1", "2");
+			foreach(var field in _fields)
+			{
+				var lookupProperty = log.LookupProperty("TimeStamp");
+				var format = field.Layout.Format(log);
+				var value = BsonValue.Create(format);
+				doc.Add(field.Name, value);
+			}
+			return doc;
 		}
 	}
 }
