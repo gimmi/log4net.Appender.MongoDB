@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using log4net.Config;
 
-namespace Log4Mongo.Tests
+namespace log4net.Appender.MongoDB.Tests
 {
 	[SetUpFixture]
 	public class SetUpFixture

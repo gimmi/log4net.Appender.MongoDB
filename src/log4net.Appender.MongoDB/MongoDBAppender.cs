@@ -6,9 +6,9 @@ using MongoDB.Driver;
 using log4net.Appender;
 using log4net.Core;
 
-namespace Log4Mongo
+namespace log4net.Appender.MongoDB
 {
-	public class MongoAppender : IBulkAppender
+	public class MongoDBAppender : IBulkAppender
 	{
 		/// <summary>
 		/// MongoDB database connection in the format:

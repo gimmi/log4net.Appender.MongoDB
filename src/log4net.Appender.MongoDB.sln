@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4Mongo", "Log4Mongo\Log4Mongo.csproj", "{59D8ECF9-2867-43FD-BF18-EFE2758CF14F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log4net.Appender.MongoDB", "log4net.Appender.MongoDB\log4net.Appender.MongoDB.csproj", "{59D8ECF9-2867-43FD-BF18-EFE2758CF14F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4Mongo.Tests", "Log4Mongo.Tests\Log4Mongo.Tests.csproj", "{69DD514D-D096-4279-BA9D-4331EE4A6DE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log4net.Appender.MongoDB.Tests", "log4net.Appender.MongoDB.Tests\log4net.Appender.MongoDB.Tests.csproj", "{69DD514D-D096-4279-BA9D-4331EE4A6DE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

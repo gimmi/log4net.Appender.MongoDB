@@ -8,8 +8,8 @@
     <ProjectGuid>{69DD514D-D096-4279-BA9D-4331EE4A6DE2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Log4Mongo.Tests</RootNamespace>
-    <AssemblyName>Log4Mongo.Tests</AssemblyName>
+    <RootNamespace>log4net.Appender.MongoDB.Tests</RootNamespace>
+    <AssemblyName>log4net.Appender.MongoDB.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SetUpFixture.cs" />
-    <Compile Include="MongoAppenderTest.cs" />
+    <Compile Include="MongoDBAppenderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,9 +67,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Log4Mongo\Log4Mongo.csproj">
+    <ProjectReference Include="..\log4net.Appender.MongoDB\log4net.Appender.MongoDB.csproj">
       <Project>{59D8ECF9-2867-43FD-BF18-EFE2758CF14F}</Project>
-      <Name>Log4Mongo</Name>
+      <Name>log4net.Appender.MongoDB</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

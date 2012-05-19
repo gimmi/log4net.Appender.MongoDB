@@ -1,6 +1,6 @@
 ﻿using log4net.Layout;
 
-namespace Log4Mongo
+namespace log4net.Appender.MongoDB
 {
 	public class MongoAppenderFileld
 	{

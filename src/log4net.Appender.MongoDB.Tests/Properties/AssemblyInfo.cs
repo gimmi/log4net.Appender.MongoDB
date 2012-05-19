@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Log4Mongo")]
+[assembly: AssemblyTitle("log4net.Appender.MongoDB.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Log4Mongo")]
+[assembly: AssemblyProduct("log4net.Appender.MongoDB.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b7b971cf-3b25-4889-99cc-62fdd6fecaa4")]
+[assembly: Guid("828d9360-d651-41c2-82f4-1fbc211865da")]
 
 // Version information for an assembly consists of the following four values:
 //
