@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.github.com/gimmi/log4net.Appender.MongoDB.MongoDBAppender/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/gimmi/log4net.Appender.MongoDB</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <tags>log logging log4net apache debug diagnostic db nosql mongo mongodb appender</tags>
+  </metadata>
+</package>
