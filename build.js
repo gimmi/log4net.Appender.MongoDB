@@ -5,12 +5,13 @@ var utils = jsmake.Utils;
 var sys = jsmake.Sys;
 var dotnet = new jsmake.dotnet.DotNetUtils();
 
-var version;
+var version, assemblyVersion;
 
 task('default', 'build');
 
 task('version', function () {
 	version = JSON.parse(fs.readFile('version.json'));
+	assemblyVersion = [ version.major, version.minor, version.build, 0 ].join('.');
 });
 
 task('dependencies', function () {
@@ -27,9 +28,9 @@ task('assemblyinfo', 'version', function () {
 		AssemblyTrademark: '',
 		AssemblyCompany: 'Gian Marco Gherardi',
 		AssemblyConfiguration: '', // Probably a good place to put Git SHA1 and build date
-		AssemblyVersion: [ version.major, version.minor, version.build, 0 ].join('.'),
-		AssemblyFileVersion: [ version.major, version.minor, version.build, 0 ].join('.'),
-		AssemblyInformationalVersion: [ version.major, version.minor, version.build, 0 ].join('.')
+		AssemblyVersion: assemblyVersion,
+		AssemblyFileVersion: assemblyVersion,
+		AssemblyInformationalVersion: assemblyVersion
 	});
 });
 
@@ -44,11 +45,12 @@ task('test', 'build', function () {
 
 task('release', 'test', function () {
 	fs.deletePath('build');
-	dotnet.deployToNuGet('src/log4net.Appender.MongoDB/log4net.Appender.MongoDB.csproj', 'src/log4net.Appender.MongoDB/bin/Debug', true);
-/*
-	dotnet.runMSBuild('src/ExtDirectHandler.sln', [ 'Clean', 'ExtDirectHandler:Rebuild' ]);
-	fs.zipPath('build/bin', 'build/extdirecthandler-' + [ version.major, version.minor, version.build, version.revision ].join('.') + '.zip');
-*/
+	fs.createDirectory('build');
+	//dotnet.deployToNuGet('src/log4net.Appender.MongoDB/log4net.Appender.MongoDB.csproj', 'src/log4net.Appender.MongoDB/bin/Debug', true);
+	
+	sys.run('tools/nuget/nuget.exe', 'pack', 'src\\log4net.Appender.MongoDB\\log4net.Appender.MongoDB.csproj', '-Build', '-OutputDirectory', 'build', '-Symbols');
+	sys.run('tools/nuget/nuget.exe', 'push', 'build\\log4net.Appender.MongoDB.' + assemblyVersion + '.nupkg');
+	
 	version.build += 1;
 	fs.writeFile('version.json', JSON.stringify(version));
 });

@@ -30,7 +30,7 @@ jsmake.dotnet.DotNetUtils.prototype = {
 			.include('*.nupkg')
 			.exclude('*.symbols.nupkg')
 			.scan();
-		jsmake.Sys.createRunner(this._nugetPath)
+			jsmake.Sys.createRunner(this._nugetPath)
 			.args('push', packages[0])
 			.run();
 	},

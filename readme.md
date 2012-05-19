@@ -6,13 +6,14 @@ The title says it all. Check [Log4Net site](http://logging.apache.org/log4net/) 
 Installation
 ------------
 
-[Get it on NuGet](http://nuget.org/packages/log4net.Appender.MongoDB.MongoDBAppender), or download sources and run build.cmd to build
+[Get it on NuGet](http://nuget.org/packages/log4net.Appender.MongoDB), or download sources and run build.cmd to build
 
 Appender configuration sample
 -----------------------------
 
 	<appender name="MongoDBAppender" type="log4net.Appender.MongoDB.MongoDBAppender, log4net.Appender.MongoDB">
-		<connectionString value="mongodb://localhost" /> <!-- See http://www.mongodb.org/display/DOCS/Connections for all available options -->
+		<!-- See http://www.mongodb.org/display/DOCS/Connections for connectionstring options -->
+		<connectionString value="mongodb://localhost" />
 		<field>
 			<name value="timestamp" />
 			<layout type="log4net.Layout.RawTimeStampLayout" />
