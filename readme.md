@@ -59,4 +59,4 @@ Appender configuration sample
 License
 -------
 
-[Here](https://raw.github.com/gimmi/log4net.Appender.MongoDB.MongoDBAppender/master/LICENSE)
+[APACHE 2](https://raw.github.com/gimmi/log4net.Appender.MongoDB/master/LICENSE)
