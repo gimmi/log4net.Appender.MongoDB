@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -7,7 +6,7 @@ using log4net.Core;
 
 namespace log4net.Appender.MongoDB
 {
-	public class MongoDBAppender : IBulkAppender
+	public class MongoDBAppender : AppenderSkeleton
 	{
 		private readonly List<MongoAppenderFileld> _fields = new List<MongoAppenderFileld>();
 
@@ -25,28 +24,30 @@ namespace log4net.Appender.MongoDB
 		/// </summary>
 		public string CollectionName { get; set; }
 
-		public string Name { get; set; }
-
 		public void AddField(MongoAppenderFileld fileld)
 		{
 			_fields.Add(fileld);
 		}
 
-		public void Close() {}
-
-		public void DoAppend(LoggingEvent loggingEvent)
+		protected override void Append(LoggingEvent loggingEvent)
 		{
-			DoAppend(new[] { loggingEvent });
+			var collection = GetCollection();
+			collection.Insert(BuildBsonDocument(loggingEvent));
 		}
 
-		public void DoAppend(LoggingEvent[] logs)
+		protected override void Append(LoggingEvent[] loggingEvents)
+		{
+			var collection = GetCollection();
+			collection.InsertBatch(loggingEvents.Select(BuildBsonDocument));
+		}
+
+		private MongoCollection GetCollection()
 		{
 			MongoUrl url = MongoUrl.Create(ConnectionString);
 			MongoServer conn = MongoServer.Create(url);
 			MongoDatabase db = conn.GetDatabase(url.DatabaseName ?? "log4net");
 			MongoCollection collection = db.GetCollection(CollectionName ?? "logs");
-
-			collection.InsertBatch(logs.Select(BuildBsonDocument));
+			return collection;
 		}
 
 		private BsonDocument BuildBsonDocument(LoggingEvent log)
