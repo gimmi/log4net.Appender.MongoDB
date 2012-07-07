@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using NUnit.Framework;
 using SharpTestsEx;
-using log4net;
+using log4net.Config;
 
 namespace log4net.Appender.MongoDB.Tests
 {
@@ -17,6 +19,57 @@ namespace log4net.Appender.MongoDB.Tests
 		[SetUp]
 		public void SetUp()
 		{
+			XmlConfigurator.Configure(new MemoryStream(Encoding.UTF8.GetBytes(@"
+<log4net>
+	<appender name='MongoDBAppender' type='log4net.Appender.MongoDB.MongoDBAppender, log4net.Appender.MongoDB'>
+		<connectionString value='mongodb://localhost' />
+		<field>
+			<name value='timestamp' />
+			<layout type='log4net.Layout.RawTimeStampLayout' />
+		</field>
+		<field>
+			<name value='level' />
+			<layout type='log4net.Layout.PatternLayout' value='%level' />
+		</field>
+		<field>
+			<name value='thread' />
+			<layout type='log4net.Layout.PatternLayout' value='%thread' />
+		</field>
+		<field>
+			<name value='threadContextProperty' />
+			<layout type='log4net.Layout.RawPropertyLayout'>
+				<key value='threadContextProperty' />
+			</layout>
+		</field>
+		<field>
+			<name value='globalContextProperty' />
+			<layout type='log4net.Layout.RawPropertyLayout'>
+				<key value='globalContextProperty' />
+			</layout>
+		</field>
+		<field>
+			<name value='numberProperty' />
+			<layout type='log4net.Layout.RawPropertyLayout'>
+				<key value='numberProperty' />
+			</layout>
+		</field>
+		<field>
+			<name value='dateProperty' />
+			<layout type='log4net.Layout.RawPropertyLayout'>
+				<key value='dateProperty' />
+			</layout>
+		</field>
+		<field>
+			<name value='exception' />
+			<layout type='log4net.Layout.ExceptionLayout' />
+		</field>
+	</appender>
+	<root>
+		<level value='ALL' />
+		<appender-ref ref='MongoDBAppender' />
+	</root>
+</log4net>
+")));
 			MongoServer conn = MongoServer.Create("mongodb://localhost");
 			MongoDatabase db = conn.GetDatabase("log4net");
 			_collection = db.GetCollection("logs");
