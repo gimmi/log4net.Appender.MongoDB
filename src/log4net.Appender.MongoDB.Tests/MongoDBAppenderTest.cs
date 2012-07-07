@@ -14,10 +14,17 @@ namespace log4net.Appender.MongoDB.Tests
 	public class MongoDBAppenderTest
 	{
 		private MongoCollection _collection;
-		private ILog _target;
 
 		[SetUp]
 		public void SetUp()
+		{
+			MongoServer conn = MongoServer.Create("mongodb://localhost");
+			MongoDatabase db = conn.GetDatabase("log4net");
+			_collection = db.GetCollection("logs");
+			_collection.RemoveAll();
+		}
+
+		private ILog GetConfiguredLog()
 		{
 			XmlConfigurator.Configure(new MemoryStream(Encoding.UTF8.GetBytes(@"
 <log4net>
@@ -70,20 +77,17 @@ namespace log4net.Appender.MongoDB.Tests
 	</root>
 </log4net>
 ")));
-			MongoServer conn = MongoServer.Create("mongodb://localhost");
-			MongoDatabase db = conn.GetDatabase("log4net");
-			_collection = db.GetCollection("logs");
-			_collection.RemoveAll();
-
-			_target = LogManager.GetLogger("Test");
+			return LogManager.GetLogger("Test");
 		}
 
 		[Test]
 		public void Should_log_all_events()
 		{
+			var target = GetConfiguredLog();
+
 			for(int i = 0; i < 1000; i++)
 			{
-				_target.Info(i);
+				target.Info(i);
 			}
 			_collection.Count().Should().Be.EqualTo(1000);
 		}
@@ -91,7 +95,9 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_log_timestamp()
 		{
-			_target.Info("a log");
+			var target = GetConfiguredLog();
+
+			target.Info("a log");
 
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("timestamp").Value.Should().Be.OfType<BsonDateTime>();
@@ -101,7 +107,9 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_log_level()
 		{
-			_target.Info("a log");
+			var target = GetConfiguredLog();
+
+			target.Info("a log");
 
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("level").Value.Should().Be.OfType<BsonString>();
@@ -111,7 +119,9 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_log_thread()
 		{
-			_target.Info("a log");
+			var target = GetConfiguredLog();
+
+			target.Info("a log");
 
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("thread").Value.Should().Be.OfType<BsonString>();
@@ -121,13 +131,15 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_log_exception()
 		{
+			var target = GetConfiguredLog();
+
 			try
 			{
 				throw new ApplicationException("BOOM");
 			}
 			catch(Exception e)
 			{
-				_target.Fatal("a log", e);
+				target.Fatal("a log", e);
 			}
 
 			var doc = _collection.FindOneAs<BsonDocument>();
@@ -138,9 +150,11 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_log_threadcontext_properties()
 		{
+			var target = GetConfiguredLog();
+
 			ThreadContext.Properties["threadContextProperty"] = "value";
 
-			_target.Info("a log");
+			target.Info("a log");
 
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("threadContextProperty").Value.AsString.Should().Be.EqualTo("value");
@@ -149,9 +163,11 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_log_globalcontext_properties()
 		{
+			var target = GetConfiguredLog();
+
 			GlobalContext.Properties["globalContextProperty"] = "value";
 
-			_target.Info("a log");
+			target.Info("a log");
 
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("globalContextProperty").Value.AsString.Should().Be.EqualTo("value");
@@ -160,10 +176,12 @@ namespace log4net.Appender.MongoDB.Tests
 		[Test]
 		public void Should_preserve_type_of_properties()
 		{
+			var target = GetConfiguredLog();
+
 			GlobalContext.Properties["numberProperty"] = 123;
 			ThreadContext.Properties["dateProperty"] = DateTime.Now;
 
-			_target.Info("a log");
+			target.Info("a log");
 	
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("numberProperty").Value.Should().Be.OfType<BsonInt32>();
