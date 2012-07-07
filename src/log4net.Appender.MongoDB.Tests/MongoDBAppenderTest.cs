@@ -237,5 +237,30 @@ namespace log4net.Appender.MongoDB.Tests
 			properties.GetElement("GlobalContextProperty").Value.AsString.Should().Be.EqualTo("GlobalContextValue");
 			properties.GetElement("ThreadContextProperty").Value.AsString.Should().Be.EqualTo("ThreadContextValue");
 		}
+
+		[Test]
+		public void Should_use_legacy_connection_configuration_when_no_connectionstring_defined()
+		{
+			XmlConfigurator.Configure(new MemoryStream(Encoding.UTF8.GetBytes(@"
+<log4net>
+	<appender name='MongoDBAppender' type='log4net.Appender.MongoDB.MongoDBAppender, log4net.Appender.MongoDB'>
+		<host value='localhost' />
+		<port value='27017' />
+		<databaseName value='log4net' />
+		<collectionName value='logs' />
+	</appender>
+	<root>
+		<level value='ALL' />
+		<appender-ref ref='MongoDBAppender' />
+	</root>
+</log4net>
+")));
+			var target = LogManager.GetLogger("Test");
+
+			target.Info("a log");
+
+			var doc = _collection.FindOneAs<BsonDocument>();
+			doc.GetElement("message").Value.AsString.Should().Be.EqualTo("a log");
+		}
 	}
 }

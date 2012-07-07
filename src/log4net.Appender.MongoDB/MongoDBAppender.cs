@@ -26,6 +26,43 @@ namespace log4net.Appender.MongoDB
 		/// </summary>
 		public string CollectionName { get; set; }
 
+		#region Deprecated
+
+        /// <summary>
+        /// Hostname of MongoDB server
+		/// Defaults to localhost
+        /// </summary>
+		[Obsolete("Use ConnectionString")]
+		public string Host { get; set; }
+
+        /// <summary>
+        /// Port of MongoDB server
+		/// Defaults to 27017
+        /// </summary>
+		[Obsolete("Use ConnectionString")]
+		public int Port { get; set; }
+
+        /// <summary>
+        /// Name of the database on MongoDB
+		/// Defaults to log4net_mongodb
+        /// </summary>
+		[Obsolete("Use ConnectionString")]
+		public string DatabaseName { get; set; }
+
+        /// <summary>
+        /// MongoDB database user name
+        /// </summary>
+		[Obsolete("Use ConnectionString")]
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// MongoDB database password
+        /// </summary>
+		[Obsolete("Use ConnectionString")]
+		public string Password { get; set; }
+
+		#endregion
+
 		public void AddField(MongoAppenderFileld fileld)
 		{
 			_fields.Add(fileld);
@@ -45,11 +82,21 @@ namespace log4net.Appender.MongoDB
 
 		private MongoCollection GetCollection()
 		{
+			var db = GetDatabase();
+			MongoCollection collection = db.GetCollection(CollectionName ?? "logs");
+			return collection;
+		}
+
+		private MongoDatabase GetDatabase()
+		{
+			if(string.IsNullOrWhiteSpace(ConnectionString))
+			{
+				return BackwardCompatibility.GetDatabase(this);
+			}
 			MongoUrl url = MongoUrl.Create(ConnectionString);
 			MongoServer conn = MongoServer.Create(url);
 			MongoDatabase db = conn.GetDatabase(url.DatabaseName ?? "log4net");
-			MongoCollection collection = db.GetCollection(CollectionName ?? "logs");
-			return collection;
+			return db;
 		}
 
 		private BsonDocument BuildBsonDocument(LoggingEvent log)
