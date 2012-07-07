@@ -1,2 +1,1 @@
-tools\jsmake\jsmake.cmd %*
-pause
+%~dp0\tools\psake\psake.cmd %*
