@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -82,18 +83,6 @@ namespace log4net.Appender.MongoDB.Tests
 </log4net>
 ")));
 			return LogManager.GetLogger("Test");
-		}
-
-		[Test]
-		public void Should_log_all_events()
-		{
-			var target = GetConfiguredLog();
-
-			for(int i = 0; i < 1000; i++)
-			{
-				target.Info(i);
-			}
-			_collection.Count().Should().Be.EqualTo(1000);
 		}
 
 		[Test]
@@ -261,6 +250,40 @@ namespace log4net.Appender.MongoDB.Tests
 
 			var doc = _collection.FindOneAs<BsonDocument>();
 			doc.GetElement("message").Value.AsString.Should().Be.EqualTo("a log");
+		}
+
+		[Test]
+		public void Should_log_in_batch()
+		{
+			XmlConfigurator.Configure(new MemoryStream(Encoding.UTF8.GetBytes(@"
+<log4net>
+	<appender name='BufferingForwardingAppender' type='log4net.Appender.BufferingForwardingAppender' >
+		<bufferSize value='5'/>
+		<appender-ref ref='MongoDBAppender' />
+	</appender>
+	<appender name='MongoDBAppender' type='log4net.Appender.MongoDB.MongoDBAppender, log4net.Appender.MongoDB'>
+		<connectionString value='mongodb://localhost' />
+	</appender>
+	<root>
+		<level value='ALL' />
+		<appender-ref ref='BufferingForwardingAppender' />
+	</root>
+</log4net>
+")));
+			var target = LogManager.GetLogger("Test");
+
+			target.Info(1);
+			target.Info(2);
+			target.Info(3);
+			target.Info(4);
+			target.Info(5);
+
+			_collection.Count().Should().Be.EqualTo(0);
+
+			target.Info(6);
+
+			_collection.FindAllAs<BsonDocument>().Select(x => x.GetElement("message").Value.AsString).Should().Have.SameSequenceAs(new[] { "1", "2", "3", "4", "5", "6" });
+
 		}
 	}
 }
