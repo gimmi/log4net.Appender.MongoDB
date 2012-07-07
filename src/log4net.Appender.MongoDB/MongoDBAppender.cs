@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -52,6 +54,10 @@ namespace log4net.Appender.MongoDB
 
 		private BsonDocument BuildBsonDocument(LoggingEvent log)
 		{
+			if(_fields.Count == 0)
+			{
+				return BackwardCompatibility.BuildBsonDocument(log);
+			}
 			var doc = new BsonDocument();
 			foreach(MongoAppenderFileld field in _fields)
 			{
